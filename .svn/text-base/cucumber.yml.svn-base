@@ -1,3 +1,0 @@
-default: --format pretty
-headless: HEADLESS=true --tags @nightly --tags ~@draft --tags ~@wip --tags ~@pending
-
