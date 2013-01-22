@@ -1,10 +1,6 @@
-class KRMSCustomComponentsData
+class CustomComponentsData
   include Foundry
   include DataFactory
-  include DateFactory
-  include StringFactory
-  include Workflows
-  include PopulationsSearch
 
   attr_accessor :course, :gpa, :test_score, :test_name, :department, :organization, :grade_select
 
@@ -12,15 +8,14 @@ class KRMSCustomComponentsData
     @browser = browser
 
     defaults = {
-        :course=>random_alphanums.strip,
-        :gpa=>0.0,
-        :test_score=>0,
-        :test_name=>random_alphanums.strip,
-        :department=>random_alphanums.strip,
-        :organization=>random_alphanums.strip
+        :course=>random_alphanums,
+        :gpa=>"0.0",
+        :test_score=>"0",
+        :test_name=>random_alphanums,
+        :department=>random_alphanums,
+        :organization=>random_alphanums
     }
-    options = defaults.merge(opts)
 
-    set_options(options)
+    set_options(defaults.merge(opts))
   end
 end

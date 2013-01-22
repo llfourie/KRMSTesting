@@ -1,36 +1,27 @@
 When /^I select the Select Agenda dropdown$/ do
-  @krmsmanageenroll = make KRMSManageEnrollmentEligibilityData
   go_to_krms_manage_eligibilty
-  on KRMSManageEnrollmentEligibilityPage do |page|
-    page.selectAgenda.click
+  on EnrollmentEligibility do |page|
+    page.select_agenda.click
   end
 end
 
 When /^I select the Select Rule dropdown$/ do
-  on KRMSManageEnrollmentEligibilityPage do |page|
-    page.selectRule.click
+  on EnrollmentEligibility do |page|
+    page.select_rule.click
   end
 end
 
-When /^I select the "(.*)" option from "(.*)" list$/ do |option, selection|
-  if selection == "Select Agenda"
-    selection = "agendaType"
-  elsif selection == "Select Rule"
-    selection = "ruleType"
-  end
-  on KRMSManageEnrollmentEligibilityPage do |page|
-    page.select(name: selection).click
-    page.select(name: selection).select /#{option}/
+When /^I select the "(.*)" option from "(.*)" list$/ do |option, select|
+  selection = {"Select Agenda"=>:agendaType, "Select Rule"=>:ruleType}
+  on EnrollmentEligibility do |page|
+    page.select(name: selection[select]).select /#{option}/
   end
 end
 
-Then /^there should be "(.*)" possible selections for "(.*)"$/ do |num, selection|
-  on KRMSManageEnrollmentEligibilityPage do |page|
-    if selection == "Select Agenda"
-      selectList = page.selectAgenda
-    elsif selection == "Select Rule"
-      selectList = page.selectRule
-    end
+Then /^there should be "(.*)" possible selections for "(.*)"$/ do |num, select|
+  selection = {"Select Agenda"=>:agendaType, "Select Rule"=>:ruleType}
+  on EnrollmentEligibility do |page|
+    selectList = page.send(selection[select])
     selectContent = selectList.options.map(&:text)
     count = 0
     selectContent.each do |content|
@@ -45,11 +36,12 @@ Then /^there should be "(.*)" possible selections for "(.*)"$/ do |num, selectio
   sleep 10
 end
 
-Then /^these tabs should be visible "(.*)", "(.*)", "(.*)", "(.*)"$/ do |tab1, tab2, tab3, tab4|
-  on KRMSManageEnrollmentEligibilityPage do |page|
-    tab1.should eq page.div(id: "Enrollment-Eligibility-TabSection_tabs").a(href: "#u86_tab").text
-    tab2.should eq page.div(id: "Enrollment-Eligibility-TabSection_tabs").a(href: "#u99_tab").text
-    tab3.should eq page.div(id: "Enrollment-Eligibility-TabSection_tabs").a(href: "#u112_tab").text
-    tab4.should eq page.div(id: "Enrollment-Eligibility-TabSection_tabs").a(href: "#u948_tab").text
+Then /^these tabs should be visible:$/ do |table|
+  on EnrollmentEligibility do |page|
+    @tabs = table.raw
+    @tabs[0].should eq page.tab_one.text
+    @tabs[1].should eq page.tab_two.text
+    @tabs[2].should eq page.tab_three.text
+    @tabs[3].should eq page.tab_four.text
   end
 end

@@ -1,66 +1,50 @@
 When /^I search for (?:a|an) "(.*)" with text "(.*)"$/ do |section, code|
-  @krmstext = make KRMSCustomComponentsData
+  fields = {"Single Course"=>:course, "Department"=>:department, "Organization"=>:organization, "Test Name"=>:test_name}
   go_to_krms_components
-  on KrmsCustomComponentsPage do |page|
-    if section == "Single Course"
-      page.course.set code
-    elsif section == "Department"
-      page.department.set code
-    elsif section == "Organization"
-      page.organization.set code
-    elsif section == "Test Name"
-      page.test_name.set code
-    end
+  on CustomComponents do |page|
+    page.send(fields[section]).set code
   end
   sleep 2
 end
 
 Then /^the text "(.*)" should exist in the results$/ do |code|
-  on KrmsCustomComponentsPage do |page|
-    page.a(class: "ui-corner-all").text.should == code
+  on CustomComponents do |page|
+    page.auto_message.text.should == code
   end
   sleep 2
 end
 
 Then /^the text "(.*)" should not exist in the results$/ do |code|
-  on KrmsCustomComponentsPage do |page|
-    if page.a(class: "ui-corner-all").exists?
-      page.a(class: "ui-corner-all").text.should_not == code
+  on CustomComponents do |page|
+    if page.auto_message.exists?
+      page.auto_message.text.should_not == code
     end
   end
   sleep 2
 end
 
 When /^I enter "(.*)" in the "(.*)" text field$/ do |num, section|
-  @krmsnum = make KRMSCustomComponentsData
+  fields = {"GPA"=>:gpa, "Test Score"=>:test_score}
   go_to_krms_components
-  on KrmsCustomComponentsPage do |page|
-    if section == "GPA"
-      page.gpa.set num
-    elsif section == "Test Score"
-      page.test_score.set num
-    end
+  on CustomComponents do |page|
+    page.send(fields[section]).set num
   end
-  sleep 2
 end
 
-Then /^there should be an error message above the "(.*)" text field$/ do |section|
-  on KrmsCustomComponentsPage do |page|
-    if section == "GPA"
-      page.test_score.set ""
-    elsif section == "Test Score"
-      page.test_name.set ""
-    end
+Then /^the "(.*)" should have an error message$/ do |section|
+  fields = {"GPA"=>:gpa, "Test Score"=>:test_score}
+  on CustomComponents do |page|
+    page.send_keys :tab
     sleep 2
-    if page.img(class: "uif-errorMessageItem-field").exists?
-      if section == "GPA"
-        if @krmsnum.gpa == /^\d$/
-          page.img(class: "uif-errorMessageItem-field").text.should eq "Please enter at least 3 characters."
-        elsif @krmsnum.gpa == /^\d\d\d$/
-          page.img(class: "uif-errorMessageItem-field").text.should eq "Must be a non-zero positive fixed point number, with 2 max digits and 1 digits to the right of the decimal point"
+    if page.error_message.exists?
+      if fields[section] == "gpa"
+        if page.send(fields[section]).text == /^\d$/
+          page.error_message.text.should eq "Please enter at least 3 characters."
+        elsif page.send(fields[section]).text == /^\d\d\d$/
+          page.error_message.text.should eq "Must be a non-zero positive fixed point number, with 2 max digits and 1 digits to the right of the decimal point"
         end
-      elsif section == "Test Score"
-        page.img(class: "uif-errorMessageItem-field").text.should eq "Must be a positive whole number"
+      elsif fields[section] == "test_score"
+        page.error_message.text.should eq "Must be a positive whole number"
       end
     end
     page.execute_script("window.confirm = function() {return true}")
@@ -68,20 +52,12 @@ Then /^there should be an error message above the "(.*)" text field$/ do |sectio
   end
 end
 
-Then /^there should be no error message above the "(.*)" text field$/ do |section|
-  on KrmsCustomComponentsPage do |page|
-    if section == "GPA"
-      page.test_score.set ""
-    elsif section == "Test Score"
-      page.test_name.set ""
-    end
+Then /^there should be no error message$/ do
+  on CustomComponents do |page|
+    page.send_keys :tab
     sleep 2
-    if page.img(class: "uif-errorMessageItem-field").exists?
-      if section == "GPA"
-        page.img(class: "uif-errorMessageItem-field").text.should eq ""
-      elsif section == "Test Score"
-        page.img(class: "uif-errorMessageItem-field").text.should eq ""
-      end
+    if page.error_message.exists?
+      page.error_message.text.should eq ""
     end
     page.execute_script("window.confirm = function() {return true}")
   end
@@ -89,16 +65,15 @@ Then /^there should be no error message above the "(.*)" text field$/ do |sectio
 end
 
 When /^I select the "(.*)" radio button$/ do |rb|
-  @krmsrb = make KRMSCustomComponentsData
   go_to_krms_components
-  on KrmsCustomComponentsPage do |page|
+  on CustomComponentse do |page|
     page.label(text: rb).click
   end
   sleep 10
 end
 
 Then /^there should be "(.*)" possible selections for Grade$/ do |num|
-  on KrmsCustomComponentsPage do |page|
+  on CustomComponents do |page|
   selectList = page.grade_select
   selectContent = selectList.options.map(&:text)
   count = 0

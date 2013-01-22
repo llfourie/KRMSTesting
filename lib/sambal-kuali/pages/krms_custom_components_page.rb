@@ -1,4 +1,4 @@
-class KrmsCustomComponentsPage < BasePage
+class CustomComponents < BasePage
 
   expected_element :course
 
@@ -11,5 +11,7 @@ class KrmsCustomComponentsPage < BasePage
   element(:department) { |b| b.text_field(id: "KRMS-Department-Field_control") }
   element(:organization) { |b| b.text_field(id: "KRMS-Administering-Org-Field_control") }
   element(:grade_select) { |b| b.select(id: "KRMS-GradeValues-Field_control")}
+  element(:auto_message) { |b| b.a(class: "ui-corner-all")}
+  element(:error_message) { |b| b.img(class: "uif-errorMessageItem-field")}
 
 end

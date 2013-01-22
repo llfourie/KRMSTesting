@@ -1,12 +1,8 @@
-class KRMSManageEnrollmentEligibilityData
+class EnrollmentEligibilityData
   include Foundry
   include DataFactory
-  include DateFactory
-  include StringFactory
-  include Workflows
-  include PopulationsSearch
 
-  attr_accessor :selectAgenda, :selectRule
+  attr_accessor :select_agenda, :select_rule
 
   def initialize(browser, opts={})
     @browser = browser

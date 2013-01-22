@@ -1,7 +1,7 @@
 @draft
 Feature: KRMS Manage Enrollment Eligibility
 
-  Check to see if I all elements are present on the Manage Enrollment Eligibility page
+  Check to see if the correct content is loaded on the Manage Enrollment Eligibility page
 
   Background:
     Given I am logged in as admin
@@ -27,4 +27,8 @@ Feature: KRMS Manage Enrollment Eligibility
     When I select the Select Agenda dropdown
     And I select the "enrollmentEligibility" option from "Select Agenda" list
     And I select the "antireq" option from "Select Rule" list
-    Then these tabs should be visible "Preview Canonical", "Preview CO", "Edit with Object", "Edit with Logic"
+    Then these tabs should be visible:
+      | Preview Canonical |
+      | Preview CO        |
+      | Edit with Object  |
+      | Edit with Logic   |

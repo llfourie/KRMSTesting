@@ -6,42 +6,45 @@ Check to see if result is true when valid course is given and false otherwise
   Background:
     Given I am logged in as admin
 
-  Scenario: Return true for valid single course
-    When I search for a "Single Course" with text "mathm"
-    Then the text "MATHM" should exist in the results
-
-  Scenario: Return false for invalid single course
-    When I search for a "Single Course" with text "aaaa212"
-    Then the text "AAAA212" should not exist in the results
-
-  Scenario Outline: Return false for incorrect GPA entered
-    When I enter "<num>" in the "<field>" text field
-    Then there should be an error message above the "<field>" text field
+  Scenario Outline: Return true for correct string entered
+    When I search for a "<field>" with text "<text>"
+    Then the text "<result>" should exist in the results
 
     Examples:
-    | num | field |
-    | 1   | GPA   |
-    | 123 | GPA   |
+    | field         | text                     | result                   |
+    | Single Course | mathm                    | MATHM                    |
+    | Department    | cmns-applied mathematics | CMNS-Applied Mathematics |
+    | Organization  | arhu-school of music     | ARHU-School of Music     |
 
-  Scenario: Return true for correct GPA entered
-    When I enter "1.2" in the "GPA" text field
-    Then there should be no error message above the "GPA" text field
+  Scenario Outline: Return false for incorrect string entered
+    When I search for a "<field>" with text "<text>"
+    Then the text "<result>" should not exist in the results
 
-  Scenario: Return true for correct Department entered
-    When I search for a "Department" with text "cmns-applied mathematics"
-    Then the text "CMNS-Applied Mathematics" should exist in the results
+    Examples:
+    | field         | text                         | result                       |
+    | Single Course | aaaa212                      | AAAA212                      |
+    | Department    | political science department | Political Science Department |
+    | Organization  | computer science department  | Computer Science Department  |
 
-  Scenario: Return false for incorrect Department entered
-    When I search for a "Department" with text "political science department"
-    Then the text "Political Science Department" should not exist in the results
+  Scenario Outline: Return true for correct number entered
+    When I enter "<num>" in the "<field>" text field
+    Then there should be no error message
 
-  Scenario: Return true for correct Organization entered
-    When I search for an "Organization" with text "arhu-school of music"
-    Then the text "ARHU-School of Music" should exist in the results
+    Examples:
+    | num | field      |
+    | 1.2 | GPA        |
+    | 20  | Test Score |
 
-  Scenario: Return false for incorrect Organization entered
-    When I search for an "Organization" with text "computer science department"
-    Then the text "Computer Science Department" should not exist in the results
+  Scenario Outline: Return false for incorrect number entered
+    When I enter "<num>" in the "<field>" text field
+    Then the "<field>" should have an error message
+
+    Examples:
+    | num   | field      |
+    | 1     | GPA        |
+    | 123   | GPA        |
+    | 12.3  | Test Score |
+    | -12.3 | Test Score |
 
 #  Scenario: Return true for correct Test Name entered
 #    When I search for a "Test Name" with text "act math"
@@ -50,16 +53,3 @@ Check to see if result is true when valid course is given and false otherwise
 #  Scenario: Return false for incorrect Test Name entered
 #    When I search for a "Test Name" with text "adt science"
 #    Then the text "ADT Science" should not exist in the results
-
-  Scenario Outline: Return false for incorrect Test Score entered
-    When I enter "<num>" in the "<field>" text field
-    Then there should be an error message above the "<field>" text field
-
-    Examples:
-    | num   | field      |
-    | 12.3  | Test Score |
-    | -12.3 | Test Score |
-
-  Scenario: Return true for correct Test Score entered
-    When I enter "20" in the "Test Score" text field
-    Then there should be no error message above the "Test Score" text field
