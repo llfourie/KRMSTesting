@@ -27,6 +27,7 @@ class BasePage < PageFactory
     def frame_element
       #element(:frm) { |b| b.frame(id: "iframeportlet") }
       element(:frm) { |b| b } #with iframe removed
+      element(:frm_krms) { |b| b.frame(id: "easyXDM_default9321_provider").frame(id: "iframeportlet") }
     end
 
     def green_search_buttons
